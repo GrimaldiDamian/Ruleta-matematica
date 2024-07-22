@@ -5,4 +5,5 @@ centro_alto = alto//2
 ancho_Rect = 200
 alto_Rect = 100
 tamaño_letra = 25
+ancho_Tri = 100
 colores = ["green","blue","red"]
