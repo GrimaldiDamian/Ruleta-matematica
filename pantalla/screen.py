@@ -1,4 +1,5 @@
 import pygame
+import random
 from constantes.constantes import *
 
 class screen():
@@ -13,6 +14,9 @@ class screen():
         self.reloj = pygame.time.Clock()
         self.dificultad = ["FACIL","MEDIO","DIFICIL"]
         self.inicio = 0
+        self.resultado = 0
+        self.numero = 0
+        self.input = ""
 
     def manejo_evento(self):
         for event in pygame.event.get():
@@ -31,37 +35,37 @@ class screen():
                         self.inicio -= 1
                         if self.inicio ==-1:
                             self.inicio = 2
+                    elif event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
+                        self.etapa = "juego"
 
     def dibujo_Texto(self,texto,posicion_x,posicion_y):
         ancho_texto,_ = self.myFond.size(texto)
         texto = self.myFond.render(texto,True,(0,0,0))
         self.screen.blit(texto,(posicion_x - (ancho_texto//2),posicion_y))
 
+    def _animacion(self,posicion1,posicion2,posicion3,posicion4,posicion5,posicion6,i):
+        self.screen.blit(self.fondo, (0, 0))
+        pygame.draw.polygon(self.screen,"grey",[posicion1[i],posicion2[i],posicion3[i]])
+        pygame.draw.polygon(self.screen,"grey",[posicion4[i],posicion5[i],posicion6[i]])
+        self.dibujar_elementos_menu()
+        pygame.display.flip()
+        pygame.time.wait(35)
+
     def animacion(self,posicion1,posicion2,posicion3,posicion4,posicion5,posicion6):
         for i in range(len(posicion1)):
-            self.screen.blit(self.fondo, (0, 0))
-            pygame.draw.polygon(self.screen,"grey",[posicion1[i],posicion2[i],posicion3[i]])
-            pygame.draw.polygon(self.screen,"grey",[posicion4[i],posicion5[i],posicion6[i]])
-            self.dibujar_elementos_menu()
-            pygame.display.flip()
-            pygame.time.wait(35)
+            self._animacion(posicion1,posicion2,posicion3,posicion4,posicion5,posicion6,i)
 
         for i in range(len(posicion1)-1,0,-1):
-            self.screen.blit(self.fondo, (0, 0))
-            pygame.draw.polygon(self.screen,"grey",[posicion1[i],posicion2[i],posicion3[i]])
-            pygame.draw.polygon(self.screen,"grey",[posicion4[i],posicion5[i],posicion6[i]])
-            self.dibujar_elementos_menu()
-            pygame.display.flip()
-            pygame.time.wait(35)
+            self._animacion(posicion1,posicion2,posicion3,posicion4,posicion5,posicion6,i)
 
     def dibujar_menu(self):
         self.screen.blit(self.fondo,(0,0))
         punto_1 = (centro_ancho - (ancho_Rect//2) - ancho_Tri,centro_alto)
-        punto_2 = (centro_ancho - (ancho_Rect//2) - 10,centro_alto-(alto_Rect//2))
-        punto_3 = (centro_ancho - (ancho_Rect//2) - 10,centro_alto+(alto_Rect//2))
+        punto_2 = (centro_ancho - (ancho_Rect//2) - 20,centro_alto-(alto_Rect//2))
+        punto_3 = (centro_ancho - (ancho_Rect//2) - 20,centro_alto+(alto_Rect//2))
         punto_4 = (centro_ancho + (ancho_Rect//2) + ancho_Tri,centro_alto)
-        punto_5 = (centro_ancho + (ancho_Rect//2) + 10,centro_alto-(alto_Rect//2))
-        punto_6 = (centro_ancho + (ancho_Rect//2) + 10,centro_alto+(alto_Rect//2))
+        punto_5 = (centro_ancho + (ancho_Rect//2) + 20,centro_alto-(alto_Rect//2))
+        punto_6 = (centro_ancho + (ancho_Rect//2) + 20,centro_alto+(alto_Rect//2))
         
         lista_punto_1 = []
         lista_punto_2 = []
@@ -90,9 +94,37 @@ class screen():
         pygame.draw.rect(self.screen,colores[self.inicio],(centro_ancho-(ancho_Rect//2),centro_alto-(alto_Rect//2),ancho_Rect,alto_Rect))
         self.dibujo_Texto(self.dificultad[self.inicio],centro_ancho,centro_alto - (tamaño_letra//2))
 
+    def _dibujar(self,texto):
+        pygame.draw.circle(self.screen,"grey",(centro_ancho,centro_alto),radio)
+        self.dibujo_Texto(texto,centro_ancho,centro_alto - tamaño_letra//2)
+
+    def animacion_juego(self,texto,color):
+        for i in range(20):
+            self.screen.fill("purple")
+            pygame.draw.circle(self.screen,color,(centro_ancho,centro_alto),radio+i)
+            self._dibujar(texto)
+            pygame.display.flip()
+            pygame.time.wait(tiempo[self.inicio])
+
+    def juego(self):
+        self.resultado = 0
+        for i in range(cantidad_numeros[self.inicio]):
+            self.numero = random.randint(-50,50)
+            self.resultado += self.numero
+            self.animacion_juego(str(self.numero),colores[self.inicio])
+        self.animacion_juego("=")
+        self.etapa = "respuestas"
+
+    def resultado(self):
+        if self.resultado == int(self.input):
+            pass
+
     def dibujar(self):
         if self.etapa == "menu":
             self.dibujar_menu()
+        
+        if self.etapa == "juego":
+            self.juego()
         
         pygame.display.flip()
 
