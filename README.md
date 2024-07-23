@@ -24,5 +24,5 @@ Este proyecto es un juego interactivo desarrollado con Pygame que incluye un men
     python -m venv venv
     source venv/bin/activate # En Windows: venv\Scripts\activate
 
-3.Instala las dependencias:
+3. Instala las dependencias:
     pip install pygame==2.6.0
