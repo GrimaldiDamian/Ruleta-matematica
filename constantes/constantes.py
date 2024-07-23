@@ -8,5 +8,5 @@ tamaño_letra = 35
 ancho_Tri = 100
 cantidad_numeros = [10,15,20]
 radio = 100
-tiempo = [15,10,5]
+tiempo = [35,25,15]
 colores = ["green","blue","red"]

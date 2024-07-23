@@ -24,12 +24,14 @@ class screen():
                 self.running = False
             if event.type == pygame.TEXTINPUT:
                 if self.etapa == "respuestas":
-                    if event.text in ["0","1","2","3","4","5","6","7","8","9"]:
+                    if event.text in ["0","1","2","3","4","5","6","7","8","9","-"]:
                         self.input +=event.text
             if event.type == pygame.KEYDOWN:
                 if self.etapa != "menu":
                     if event.key == pygame.K_ESCAPE:
                         self.etapa = "menu"
+                        self.input = ""
+                        self.resultado = ""
                     if self.etapa == "respuestas":
                         if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                             self.respuesta()
@@ -118,7 +120,7 @@ class screen():
     def juego(self):
         self.resultado = 0
         for i in range(cantidad_numeros[self.inicio]):
-            self.numero = random.randint(-50,50)
+            self.numero = random.randint(-30,30)
             self.resultado += self.numero
             self.animacion_juego(str(self.numero),colores[self.inicio])
         self.animacion_juego("=",colores[self.inicio])
