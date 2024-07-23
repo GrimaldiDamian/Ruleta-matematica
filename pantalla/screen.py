@@ -22,10 +22,19 @@ class screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.TEXTINPUT:
+                if self.etapa == "respuestas":
+                    if event.text in ["0","1","2","3","4","5","6","7","8","9"]:
+                        self.input +=event.text
             if event.type == pygame.KEYDOWN:
                 if self.etapa != "menu":
                     if event.key == pygame.K_ESCAPE:
                         self.etapa = "menu"
+                    if self.etapa == "respuestas":
+                        if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
+                            self.respuesta()
+                        if event.key == pygame.K_BACKSPACE:
+                            self.input = self.input[:-1]
                 else:
                     if event.key == pygame.K_RIGHT:
                         self.inicio +=1
@@ -112,12 +121,18 @@ class screen():
             self.numero = random.randint(-50,50)
             self.resultado += self.numero
             self.animacion_juego(str(self.numero),colores[self.inicio])
-        self.animacion_juego("=")
+        self.animacion_juego("=",colores[self.inicio])
         self.etapa = "respuestas"
 
-    def resultado(self):
-        if self.resultado == int(self.input):
-            pass
+    def respuesta(self):
+        self.screen.fill("purple")
+        respuesta = int(self.input) if self.input != "" else 0
+        self._dibujar(self.input)
+        if self.resultado == respuesta:
+            self.animacion_juego(str(respuesta),"green")
+            self.etapa = "menu"
+        else:
+            self.animacion_juego(self.input,"red")
 
     def dibujar(self):
         if self.etapa == "menu":
@@ -126,9 +141,16 @@ class screen():
         if self.etapa == "juego":
             self.juego()
         
+        if self.etapa == "respuestas":
+            self.screen.fill("purple")
+            self._dibujar(self.input)
+        
         pygame.display.flip()
 
     def bucle_principal(self):
+
+        pygame.key.start_text_input()
+
         while self.running:
             
             self.manejo_evento()
@@ -136,3 +158,5 @@ class screen():
             self.reloj.tick(60)
             
             self.dibujar()
+
+        pygame.key.stop_text_input()
