@@ -30,8 +30,7 @@ class screen():
                 if self.etapa != "menu":
                     if event.key == pygame.K_ESCAPE:
                         self.etapa = "menu"
-                        self.input = ""
-                        self.resultado = ""
+                        self.resetear_variables()
                     if self.etapa == "respuestas":
                         if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                             self.respuesta()
@@ -48,6 +47,10 @@ class screen():
                             self.inicio = 2
                     elif event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                         self.etapa = "juego"
+
+    def resetear_variables(self):
+        self.input = ""
+        self.resultado = ""
 
     def dibujo_Texto(self,texto,posicion_x,posicion_y):
         ancho_texto,_ = self.myFond.size(texto)
@@ -120,7 +123,7 @@ class screen():
     def juego(self):
         self.resultado = 0
         for i in range(cantidad_numeros[self.inicio]):
-            self.numero = random.randint(-30,30)
+            self.numero = random.randint(-10,20)
             self.resultado += self.numero
             self.animacion_juego(str(self.numero),colores[self.inicio])
         self.animacion_juego("=",colores[self.inicio])
@@ -132,6 +135,7 @@ class screen():
         self._dibujar(self.input)
         if self.resultado == respuesta:
             self.animacion_juego(str(respuesta),"green")
+            self.resetear_variables()
             self.etapa = "menu"
         else:
             self.animacion_juego(self.input,"red")
